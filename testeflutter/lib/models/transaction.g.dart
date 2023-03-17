@@ -22,13 +22,14 @@ class TransactionAdapter extends TypeAdapter<Transaction> {
       value: fields[2] as double,
       observacao: fields[3] as String,
       date: fields[4] as DateTime,
+      catiguria: fields[5] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, Transaction obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -38,7 +39,9 @@ class TransactionAdapter extends TypeAdapter<Transaction> {
       ..writeByte(3)
       ..write(obj.observacao)
       ..writeByte(4)
-      ..write(obj.date);
+      ..write(obj.date)
+      ..writeByte(5)
+      ..write(obj.catiguria);
   }
 
   @override

@@ -1,5 +1,5 @@
 import 'package:testeflutter/Components/graph.dart';
-import 'export.dart';
+import 'package:testeflutter/Components/previsao_gastos.dart';
 import './categorias.dart';
 import 'package:flutter/material.dart';
 
@@ -25,11 +25,11 @@ class MenuLateral extends StatelessWidget {
               ),
             ),
           ),
-          //Menu categorias
+          //Menu grafico de pizza
           ListTile(
             //lista de itens que aparecem no menu
-            leading: const Icon(Icons.auto_graph),
-            title: const Text('Gráficos'),
+            leading: const Icon(Icons.pie_chart),
+            title: const Text('Gráfico de pizza'),
             onTap: () {
               Navigator.push(
                   context,
@@ -50,21 +50,25 @@ class MenuLateral extends StatelessWidget {
                           const Categorias())); //muda de tela para a de categorias
             },
           ),
-          //Menu Exportar
           ListTile(
-              leading: const Icon(Icons.import_export),
-              title: const Text('Exportar'),
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => const Export()));
-              }),
+            leading: const Icon(Icons.savings),
+            title: const Text('Previsão de gastos'),
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const PrevisaoGastos(),
+                  ));
+            },
+          ),
+          //Menu informações do aplicativo
           const SizedBox(
             height: 80, //tamanho do popup das informações do app
             child: AboutListTile(
               //informações sobre o aplicativo
               icon: Icon(Icons.info),
               applicationName: 'Gerenciador financeiro',
-              applicationVersion: '0.0.1', //versão do app
+              applicationVersion: '0.0.7', //versão do app
               applicationLegalese: 'Todos direitos reservados a Datachamp',
               //informações sobre o aplicativo
               child: Text('Sobre o app'),

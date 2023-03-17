@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:testeflutter/models/category.dart';
 
 //Form de cadastro de categorias
 
@@ -12,6 +14,7 @@ class FormCategory extends StatefulWidget {
 }
 
 class _FormCategoryState extends State<FormCategory> {
+  final box = Hive.box<Category>('category');
   final titleController = TextEditingController();
   final idController = TextEditingController();
 

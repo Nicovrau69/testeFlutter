@@ -4,15 +4,17 @@ part 'transaction.g.dart';
 @HiveType(typeId: 1)
 class Transaction extends HiveObject {
   @HiveField(0)
-  final String id;
+  String id;
   @HiveField(1)
-  final String title;
+  String title;
   @HiveField(2)
-  final double value;
+  double value;
   @HiveField(3)
-  final String observacao;
+  String observacao;
   @HiveField(4)
-  final DateTime date;
+  DateTime date;
+  @HiveField(5)
+  String catiguria;
 
   Transaction({
     required this.id,
@@ -20,5 +22,6 @@ class Transaction extends HiveObject {
     required this.value,
     required this.observacao,
     required this.date,
+    required this.catiguria,
   });
 }

@@ -13,26 +13,14 @@ class Categorias extends ConsumerStatefulWidget {
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() {
-    // TODO: implement createState
     return CategoriasState();
   }
 }
 
+final box = Hive.box<Category>('category');
+
 //Lista de categorias
 class CategoriasState extends ConsumerState<Categorias> {
-  final DropValue = ValueNotifier('');
-
-  List<Category> category = [
-    Category(
-      id: 'C1',
-      title: 'Lazer',
-    ),
-    Category(
-      id: 'C2',
-      title: 'Comida',
-    ),
-  ];
-
   //adiciona a categoria
   addCategory(String ide, String title) async {
     final newCategory = Category(
@@ -41,32 +29,52 @@ class CategoriasState extends ConsumerState<Categorias> {
     );
     final box = Hive.box<Category>('category');
     await box.add(newCategory);
-    box.values.forEach((element) {
-      print(element.id);
-    });
     ref.invalidate(categoriasProvider);
-    Navigator.of(context).pop(); //fecha teclado após clicar em adicionar
+    if (context.mounted) {
+      Navigator.of(context).pop();
+      Navigator.of(context).push; //fecha teclado após clicar em adicionar
+    }
   }
 
   //abre o form do cadastro de categoria
-  _openCategoryFormModal(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (_) {
-        return FormCategory(
-          (p0, p1) async => await addCategory(p0, p1),
-        );
-      },
-    );
+  _openCategoryFormModal(BuildContext context, String? itemKey) async {
+    final box = Hive.box<Category>('category');
+    if (itemKey != null) {
+      final existingItem = box.values
+          .toList()
+          .where(
+            (element) => element.id == itemKey,
+          )
+          .toList();
+      showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return FormCategory(
+              (p0, p1) async => await editCategory(existingItem, p0, p1));
+        },
+      );
+    } else {
+      showModalBottomSheet(
+        context: context,
+        builder: (_) {
+          return FormCategory(
+            (p0, p1) async => await addCategory(p0, p1),
+          );
+        },
+      );
+    }
   }
 
-  final TextController = TextEditingController();
-  int? categoriaIndex;
-  IconData buttonIcon = Icons.add;
+  editCategory(List<Category> teste, String id, String nome) async {
+    teste[0].id = id;
+    teste[0].title = nome;
+    teste[0].save();
+    ref.invalidate(categoriasProvider);
+    Navigator.pop(context);
+  }
 
   @override
   Widget build(BuildContext context) {
-    //mostra lista das categorias
     return Scaffold(
       appBar: AppBar(
           title: const Text('Categorias')), //titulo que aparece na app bar
@@ -113,13 +121,20 @@ class CategoriasState extends ConsumerState<Categorias> {
                                   ),
                                 ]),
                             IconButton(
-                                onPressed: () {
-                                  //data[index].;
-                                  //setState(() {});
-                                },
-                                icon: const Icon(Icons.delete)),
+                              onPressed: () {
+                                data[index].delete();
+                                ref.invalidate(categoriasProvider);
+                              },
+                              icon: const Icon(Icons.delete),
+                              color: Colors.red,
+                            ),
                             IconButton(
-                                onPressed: () {}, icon: const Icon(Icons.edit)),
+                              onPressed: () {
+                                _openCategoryFormModal(context, data[index].id);
+                              },
+                              icon: const Icon(Icons.edit),
+                              color: Colors.green,
+                            ),
                           ],
                         ),
                       );
@@ -135,7 +150,7 @@ class CategoriasState extends ConsumerState<Categorias> {
       floatingActionButton: FloatingActionButton(
           child: const Icon(Icons.add),
           onPressed: () {
-            _openCategoryFormModal(context);
+            _openCategoryFormModal(context, null);
             setState(() {});
           }),
       floatingActionButtonLocation:

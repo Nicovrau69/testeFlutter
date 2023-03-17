@@ -29,14 +29,14 @@ class Chart extends StatelessWidget {
       }
       return {
         'night': DateFormat.E().format(weekDay)[0],
-        'value': totalSum,
+        'value': totalSum == 0 ? 0 : totalSum,
       };
     });
   }
 
   double get _weekTotalValue {
     return groupedTransactions.fold(0.0, (sum, tr) {
-      return sum + (tr['value'] as double);
+      return sum + (tr['value'] as num);
     });
   }
 
@@ -57,7 +57,7 @@ class Chart extends StatelessWidget {
                       .toString(), //mostra os dias da semana no grafico
                   value: double.parse(
                       tr['value'].toString()), //mostra os valores gastos no dia
-                  percentage: (tr['value'] as double) /
+                  percentage: (tr['value'] as num) /
                       _weekTotalValue), //faz a barrinha da porcentagem no grafico
             );
           }).toList(),
