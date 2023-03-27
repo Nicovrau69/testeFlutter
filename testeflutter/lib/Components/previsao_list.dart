@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
-import 'package:testeflutter/Components/form_previsao.dart';
+import 'package:testeflutter/components/form_previsao.dart';
 import 'package:testeflutter/models/previsao.dart';
 
 import '../providers/previsao_provider.dart';
@@ -78,9 +78,8 @@ class _PrevisaoListState extends ConsumerState<PrevisaoList> {
                                       children: [
                                         Text(
                                           DateFormat('MMM y')
-                                              .format(data[index].data
-                                                  as DateTime) //mostra a data no formato MMM y da previsao no indice index
-                                              .toString(),
+                                              .format(data[index].data)
+                                              .toString(), //mostra a data no formato MMM y da previsao no indice index
                                           style: const TextStyle(
                                               fontSize: 16, //tamanho da fonte
                                               fontWeight:

@@ -48,7 +48,7 @@ class _GraphState extends State<Graph> {
             legendPosition: LegendPosition.bottom,
           ),
           chartValuesOptions: const ChartValuesOptions(
-            showChartValuesInPercentage: true,
+            showChartValuesInPercentage: false,
           ),
         ),
       ),

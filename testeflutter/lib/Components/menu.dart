@@ -1,5 +1,5 @@
-import 'package:testeflutter/Components/graph.dart';
-import 'package:testeflutter/Components/previsao_gastos.dart';
+import 'package:testeflutter/components/graph_pie.dart';
+import 'package:testeflutter/components/previsao_gastos.dart';
 import './categorias.dart';
 import 'package:flutter/material.dart';
 
@@ -62,18 +62,31 @@ class MenuLateral extends StatelessWidget {
             },
           ),
           //Menu informações do aplicativo
-          const SizedBox(
-            height: 80, //tamanho do popup das informações do app
-            child: AboutListTile(
-              //informações sobre o aplicativo
-              icon: Icon(Icons.info),
-              applicationName: 'Gerenciador financeiro',
-              applicationVersion: '0.0.7', //versão do app
-              applicationLegalese: 'Todos direitos reservados a Datachamp',
-              //informações sobre o aplicativo
-              child: Text('Sobre o app'),
-            ),
-          ),
+          ListTile(
+            leading: const Icon(Icons.info),
+            title: const Text('App infos'),
+            onTap: () {
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20)),
+                      title: const Text('Gerenciador Financeiro'),
+                      content: SizedBox(
+                        width: double.infinity,
+                        height: 80,
+                        child: Column(
+                          children: const [
+                            Text('App Version: 0.0.7'),
+                            Text('Todos direitos reservados a Datachamp'),
+                          ],
+                        ),
+                      ),
+                    );
+                  });
+            },
+          )
         ],
       ),
     );

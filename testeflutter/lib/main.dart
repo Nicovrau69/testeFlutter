@@ -4,14 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:testeflutter/Components/form_transacoes.dart';
-import 'package:testeflutter/Components/transactions_list.dart';
+import 'package:testeflutter/components/filter_dialog.dart';
+import 'package:testeflutter/components/form_transacoes.dart';
 import 'package:testeflutter/models/category.dart';
 import 'package:testeflutter/models/previsao.dart';
 import 'package:testeflutter/providers/transactions_providers.dart';
 import './models/transaction.dart';
-import './Components/menu.dart';
+import 'components/menu.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
+import 'components/transactions_list.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,7 +25,7 @@ void main() async {
   var boxT =
       await Hive.openBox<Transaction>('transaction'); //abre o box de transações
   Hive.registerAdapter(PrevisaoAdapter());
-  var boxe = await Hive.openBox<Previsao>('previsao');
+  var boxe = await Hive.openBox<Previsao>('previsao'); //abre o box de previsoes
 
   runApp(const ProviderScope(child: Financeiro()));
 }
@@ -61,6 +62,10 @@ var cat = Hive.box<Category>('category');
 
 class HomePageState extends ConsumerState<HomePage> {
   final caixa = Hive.box<Transaction>('transaction');
+  final observacaoController = TextEditingController();
+  DateTime dataSelecionada = DateTime.now();
+  TextEditingController dateController = TextEditingController();
+  String? valueDropdown;
 
   //função de adição de transação
   addTransactions(
@@ -93,6 +98,38 @@ class HomePageState extends ConsumerState<HomePage> {
     );
   }
 
+  /*openFilterFormModal(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (_) {
+          return FilterDialog((p0, p1, p2) async => );
+        });
+  }
+*/
+  /*Future<Null> selecionarData(BuildContext context) async {
+    final DateTime? selecionado = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(2021),
+        lastDate: DateTime(2029));
+    if (selecionado != null) {
+      setState(() {
+        dataSelecionada = selecionado;
+        dateController.text = DateFormat('d MMM Y').format(dataSelecionada);
+      });
+    }
+  }
+
+  void show() async {
+    final DateTimeRange? result = await showDateRangePicker(
+      context: context,
+      firstDate: DateTime(2021, 1, 1),
+      lastDate: DateTime(2029, 1, 1),
+      currentDate: DateTime.now(),
+      saveText: 'Done',
+    );
+  }
+*/
   //design da homepage
   @override
   Widget build(BuildContext context) {
@@ -114,11 +151,20 @@ class HomePageState extends ConsumerState<HomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            /*TextButton(
+                onPressed: openFilterFormModal(context),
+                child: const Text(
+                  'Filtros',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      color: Colors.cyan),
+                )),
+                */
             TransactionList(),
           ],
         ),
       ),
-
       //botão inferior central para adicição de transação
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add), //muda o icone do botão para o de adição

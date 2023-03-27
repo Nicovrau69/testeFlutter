@@ -26,6 +26,10 @@ var box = Hive.box<Category>('category');
 var caixa = Hive.box<Transaction>('transaction');
 
 class TransactionListState extends ConsumerState<TransactionList> {
+  DateTimeRange? selectedDate;
+  String? stringObservacao;
+  String? valueDropdown;
+
   openTransactionFormModal(BuildContext context, String id) {
     final existingTrans = caixa.values
         .toList()
@@ -78,6 +82,7 @@ class TransactionListState extends ConsumerState<TransactionList> {
     // teste[0].catiguria = catiguria;
     teste[0].save();
     ref.invalidate(transactionProvider);
+    setState(() {});
     Navigator.pop(context);
   }
 
@@ -89,9 +94,11 @@ class TransactionListState extends ConsumerState<TransactionList> {
     List<List<String>> data = listaCSV;
 
     String csvData = const ListToCsvConverter().convert(data);
-    final String directory = (await getApplicationSupportDirectory()).path;
-    final path = '$directory\\csv-${generator.generate()}.csv';
-    print(path);
+    final String directory = (await getApplicationSupportDirectory())
+        .path; //pega path do arquivo onde a aplicação está
+    final path =
+        '$directory\\csv-${generator.generate()}.csv'; //cria um arquivo .csv com nome aleatório no diretorio informado
+    print(path); //mostra aonde o arquivo foi colocado
     final File file = File(path);
     await file.writeAsString(csvData);
 
@@ -118,117 +125,115 @@ class TransactionListState extends ConsumerState<TransactionList> {
               height: 200,
               child: Consumer(
                 builder: (context, ref, _) {
-                  ref.watch(transactionProvider2).map(
-                    (e) {
-                      return ListView.builder(
-                        //quantidade de itens na lista
-                        itemBuilder: (ctx, index) {
-                          listaCsv.add([
-                            e.date.toString(),
-                            e.value.toString(),
-                            e.catiguria,
-                            e.observacao,
-                          ]);
-                          return Card(
-                            child: Row(
+                  final list = ref.watch(transactionProvider2);
+                  return ListView.builder(
+                    itemBuilder: (context, index) {
+                      final item = list[index];
+                      listaCsv.add([
+                        item.date.toString(),
+                        item.value.toString(),
+                        item.catiguria,
+                        item.observacao,
+                      ]);
+                      return Card(
+                        child: Row(
+                          children: <Widget>[
+                            Container(
+                              margin: const EdgeInsets.symmetric(
+                                  horizontal: 15, vertical: 10),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: Theme.of(context).primaryColor,
+                                  width: 2,
+                                ),
+                              ),
+                              padding: const EdgeInsets.all(10),
+                              child: Text(
+                                'R\$ ${item.value.toStringAsFixed(2)}',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                  color: Colors.cyan,
+                                ),
+                              ),
+                            ),
+                            //parte gráfica cadastro de transação
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
-                                Container(
-                                  margin: const EdgeInsets.symmetric(
-                                      horizontal: 15, vertical: 10),
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                      color: Theme.of(context).primaryColor,
-                                      width: 2,
-                                    ),
-                                  ),
-                                  padding: const EdgeInsets.all(10),
-                                  child: Text(
-                                    'R\$ ${e.value.toStringAsFixed(2)}',
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20,
-                                      color: Colors.cyan,
-                                    ),
+                                Text(
+                                  item.title,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                //parte gráfica cadastro de transação
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Text(
-                                      e.title,
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Text(
-                                      DateFormat('d MMM y  h:mm').format(e
-                                          .date), //mostra date em dia, mes e ano
-                                      style: const TextStyle(
-                                        color: Colors.grey,
-                                      ),
-                                    ),
-                                    Text('Categoria: ${e.catiguria}'),
-                                    TextButton(
-                                      child: const Text(
-                                        'Mais infos',
-                                        textAlign: TextAlign.end,
-                                      ),
-                                      onPressed: () {
-                                        showDialog(
-                                            context: context,
-                                            builder: (BuildContext context) {
-                                              return AlertDialog(
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(20),
-                                                ),
-                                                title: const Text(
-                                                    'Mais informações'),
-                                                alignment: Alignment.center,
-                                                content: SizedBox(
-                                                  width: double.infinity,
-                                                  height: 100,
-                                                  child: Column(
-                                                    children: [
-                                                      Text('Valor: ${e.value}'),
-                                                      Text(
-                                                          'Observação: ${e.observacao}'),
-                                                      Text('ID: ${e.id}')
-                                                    ],
-                                                  ),
-                                                ),
-                                              );
-                                            });
-                                      },
-                                    ),
-                                  ],
+                                Text(
+                                  DateFormat('d MMM y  h:mm').format(item
+                                      .date), //mostra date em dia, mes e ano
+                                  style: const TextStyle(
+                                    color: Colors.grey,
+                                  ),
                                 ),
-                                IconButton(
+                                Text('Categoria: ${item.catiguria}'),
+                                TextButton(
+                                  child: const Text(
+                                    'Mais infos',
+                                    style: TextStyle(color: Colors.cyan),
+                                    textAlign: TextAlign.end,
+                                  ),
                                   onPressed: () {
-                                    e.delete();
-                                    ref.invalidate(transactionProvider);
-                                    setState(() {});
+                                    showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                            ),
+                                            title:
+                                                const Text('Mais informações'),
+                                            alignment: Alignment.center,
+                                            content: SizedBox(
+                                              width: double.infinity,
+                                              height: 100,
+                                              child: Column(
+                                                children: [
+                                                  Text('Valor: ${item.value}'),
+                                                  Text(
+                                                      'Observação: ${item.observacao}'),
+                                                  Text('ID: ${item.id}'),
+                                                ],
+                                              ),
+                                            ),
+                                          );
+                                        });
                                   },
-                                  icon: const Icon(
-                                    Icons.delete,
-                                    color: Colors.red,
-                                  ),
-                                ),
-                                IconButton(
-                                  onPressed: () {
-                                    openTransactionFormModal(context, e.id);
-                                  },
-                                  icon: const Icon(Icons.edit),
-                                  color: Colors.green,
                                 ),
                               ],
                             ),
-                          );
-                        },
+                            IconButton(
+                              onPressed: () {
+                                item.delete();
+                                ref.invalidate(transactionProvider2);
+                              },
+                              icon: const Icon(
+                                Icons.delete,
+                                color: Colors.red,
+                              ),
+                            ),
+                            IconButton(
+                              onPressed: () {
+                                openTransactionFormModal(context, item.id);
+                              },
+                              icon: const Icon(Icons.edit),
+                              color: Colors.green,
+                            ),
+                          ],
+                        ),
                       );
                     },
+                    itemCount: list.length,
                   );
                 },
               ),

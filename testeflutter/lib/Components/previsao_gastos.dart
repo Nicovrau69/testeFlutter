@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:testeflutter/Components/previsao_list.dart';
+import 'package:testeflutter/components/previsao_list.dart';
 import 'package:testeflutter/models/previsao.dart';
 
 import '../providers/previsao_provider.dart';

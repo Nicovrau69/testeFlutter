@@ -38,6 +38,7 @@ class _TransactionFormState extends State<TransactionForm> {
         child: Padding(
           padding: const EdgeInsets.all(10),
           child: Column(children: <Widget>[
+            //text field para preencher o titulo da transacao
             TextField(
               controller: titleController,
               onSubmitted: (_) => _submitForm(),
@@ -45,14 +46,18 @@ class _TransactionFormState extends State<TransactionForm> {
                 labelText: 'Título',
               ),
             ),
+            //text field para preencher o valor da transacao
             TextField(
                 controller: valueController,
-                keyboardType:
-                    const TextInputType.numberWithOptions(decimal: true),
+                keyboardType: const TextInputType.numberWithOptions(
+                    decimal:
+                        true), //faz com que o teclado de valor seja numerico
                 onSubmitted: (_) => _submitForm(),
                 decoration: const InputDecoration(
                   labelText: 'Valor (R\$)',
                 )),
+
+            //text field para preencher a observação da transacao
             TextField(
               controller: observacaoController,
               onSubmitted: (_) => _submitForm(),
@@ -60,6 +65,7 @@ class _TransactionFormState extends State<TransactionForm> {
                 labelText: 'Observação (Opcional)',
               ),
             ),
+            //sizedbox que contem o dropdown menu de categorias
             SizedBox(
               width: 200,
               child: DropdownButton(
@@ -78,6 +84,7 @@ class _TransactionFormState extends State<TransactionForm> {
                 value: opcao,
               ),
             ),
+            //linha que aparece os botoes de cancelar form e de nova transacao
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
