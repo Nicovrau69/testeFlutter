@@ -19,17 +19,23 @@ class PrevisaoAdapter extends TypeAdapter<Previsao> {
     return Previsao(
       valor: fields[0] as double,
       data: fields[1] as DateTime,
+      id: fields[2] as int,
+      categoria: fields[3] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, Previsao obj) {
     writer
-      ..writeByte(2)
+      ..writeByte(4)
       ..writeByte(0)
       ..write(obj.valor)
       ..writeByte(1)
-      ..write(obj.data);
+      ..write(obj.data)
+      ..writeByte(2)
+      ..write(obj.id)
+      ..writeByte(3)
+      ..write(obj.categoria);
   }
 
   @override

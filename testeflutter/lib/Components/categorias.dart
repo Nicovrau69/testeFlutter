@@ -17,6 +17,7 @@ class Categorias extends ConsumerStatefulWidget {
 }
 
 final box = Hive.box<Category>('category');
+String titulos = "";
 
 //Lista de categorias
 class CategoriasState extends ConsumerState<Categorias> {

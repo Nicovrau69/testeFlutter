@@ -1,32 +1,30 @@
-import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
+import 'dart:math';
 import 'package:month_picker_dialog/month_picker_dialog.dart';
-import 'package:testeflutter/models/previsao.dart';
+import 'package:flutter/material.dart';
+
+import '../models/category.dart';
+
+//form que aparece ao clicar em adicionar previsao
 
 class PrevisaoForm extends StatefulWidget {
-  final void Function(double, DateTime) onSubmit;
-  const PrevisaoForm(this.onSubmit, {super.key});
-
+  final void Function(double, DateTime, String) onSubmit;
+  final List<Category> cat;
+  const PrevisaoForm(this.onSubmit, this.cat, {super.key});
   @override
   State<PrevisaoForm> createState() => _PrevisaoFormState();
 }
 
-final caixa = Hive.box<Previsao>('previsao');
-
 class _PrevisaoFormState extends State<PrevisaoForm> {
-  final valueControler = TextEditingController();
-  var mesAtual = DateTime.now().month;
+  final valorController = TextEditingController();
+  DateTime data = DateTime.now();
+  String? opcao;
 
-  DateTime? opcao;
-
-  _submitForm() {
-    final value = double.tryParse(valueControler.text) ?? 0.0;
-    final mes = opcao;
-
-    if (value < 0) {
-      return;
-    }
-    widget.onSubmit(value, mes!);
+  submitForm() {
+    final valor =
+        double.tryParse(valorController.text) ?? Random().nextDouble() * 300;
+    final date = data;
+    final categoria = opcao;
+    widget.onSubmit(valor, date, categoria!);
   }
 
   @override
@@ -35,49 +33,61 @@ class _PrevisaoFormState extends State<PrevisaoForm> {
       elevation: 5,
       child: Padding(
         padding: const EdgeInsets.all(10),
-        child: Column(children: <Widget>[
-          TextField(
-            controller: valueControler,
-            onSubmitted: (_) => _submitForm(),
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            decoration: const InputDecoration(labelText: 'Valor'),
-          ),
-          SizedBox(
-              width: 200,
-              child: IconButton(
-                  onPressed: () {
-                    showMonthPicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                    ).then((date) {
-                      if (date != null) {
-                        setState(() {
-                          opcao = date;
-                        });
-                      }
+        child: Column(
+          children: <Widget>[
+            TextField(
+              controller: valorController,
+              onSubmitted: (_) => submitForm(),
+              decoration: const InputDecoration(labelText: 'Valor'),
+              keyboardType:
+                  const TextInputType.numberWithOptions(decimal: true),
+            ),
+            SizedBox(
+                width: 200,
+                child: DropdownButton(
+                  isExpanded: true,
+                  items: widget.cat.map((e) {
+                    return DropdownMenuItem(
+                        value: e.title, child: Text(e.title));
+                  }).toList(),
+                  hint: const Text("Selecione a categoria: "),
+                  onChanged: (String? v) {
+                    setState(() {
+                      opcao = v;
                     });
                   },
-                  icon: const Icon(Icons.calendar_month))),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: const Text(
-                    'Cancelar',
-                    style: TextStyle(color: Colors.cyan),
-                  )),
-              TextButton(
-                  onPressed: () {
-                    _submitForm;
-                  },
-                  child: const Text(
-                    'Nova previsão',
-                    style: TextStyle(color: Colors.cyan),
-                  )),
-            ],
-          )
-        ]),
+                )),
+            IconButton(
+                onPressed: () {
+                  showMonthPicker(context: context, initialDate: DateTime.now())
+                      .then((value) {
+                    if (value != null) {
+                      setState(() {
+                        data = value;
+                      });
+                    }
+                  });
+                },
+                icon: const Icon(
+                  Icons.calendar_month,
+                )),
+            Row(
+              children: [
+                TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text('Cancelar')),
+                TextButton(
+                    onPressed: () {
+                      submitForm();
+                      Navigator.pop(context);
+                    },
+                    child: const Text('Adicionar'))
+              ],
+            )
+          ],
+        ),
       ),
     );
   }

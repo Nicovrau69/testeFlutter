@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:testeflutter/models/category.dart';
+import 'package:testeflutter/providers/transactions_providers.dart';
 
 //dialogo de filtro
 
@@ -37,6 +38,8 @@ class _FilterDialogState extends ConsumerState<FilterDialog> {
     final observacaos = observacaoController.text;
     final selecionados = selecionado;
     final drop = valueDropdown;
+
+    widget.onSubmit(observacaos, selecionados, drop);
   }
 
   @override
@@ -47,8 +50,10 @@ class _FilterDialogState extends ConsumerState<FilterDialog> {
         padding: const EdgeInsets.all(10),
         child: Column(
           children: <Widget>[
-            TextField(
+            TextFormField(
+              initialValue: ref.watch(transactionProvider2.notifier).obs,
               controller: observacaoController,
+              onSaved: (_) => submitForm(),
               decoration:
                   const InputDecoration(labelText: 'Pesquisar por observação'),
             ),
@@ -71,12 +76,11 @@ class _FilterDialogState extends ConsumerState<FilterDialog> {
               children: [
                 TextButton(
                     onPressed: () {
-                      setState(() {
-                        //transforma todos os valores em null
-                        valueDropdown = null;
-                        observacaoController = TextEditingController();
-                        selecionado = null;
-                      });
+                      //transforma todos os valores em null
+                      valueDropdown = null;
+                      observacaoController = TextEditingController();
+                      selecionado = null;
+                      ref.invalidate(transactionProvider2);
                     },
                     child: const Text('Limpar filtros')),
                 TextButton(
@@ -86,6 +90,7 @@ class _FilterDialogState extends ConsumerState<FilterDialog> {
                     child: const Text('Cancelar')),
                 TextButton(
                     onPressed: () {
+                      submitForm();
                       Navigator.pop(context);
                     },
                     child: const Text('Pesquisar'))

@@ -16,43 +16,39 @@ class FormCategory extends StatefulWidget {
 class _FormCategoryState extends State<FormCategory> {
   final box = Hive.box<Category>('category');
   final titleController = TextEditingController();
-  final idController = TextEditingController();
-
+  var categoryFormKey = GlobalKey<_FormCategoryState>();
   //envia formulario das categorias
   _submitForm() async {
-    final titulo = titleController.text;
-    final id = idController.text;
+    final id = box.keys.length.toString();
+    final title = titleController.text;
 
-    if (titulo.isEmpty || id.isEmpty) {
+    if (title.isEmpty) {
       //obriga o usuário a adicionar os dois componentes
       return;
     }
-    await widget.onSubmit(titulo, id);
+    await widget.onSubmit(id, title);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 6,
+    return Form(
+      key: categoryFormKey,
       child: Padding(
         padding: const EdgeInsets.all(10),
         child: Column(
           children: <Widget>[
             //texto que aparece no campo para preencher o titulo
-            TextField(
-              controller: idController,
-              onSubmitted: (_) async => await _submitForm(),
+            TextFormField(
+              controller: titleController,
+              onFieldSubmitted: (_) async => await _submitForm(),
               decoration: const InputDecoration(
                 labelText: 'Titulo',
               ),
-            ),
-            //texto que aparece no campo para preencher o id
-            TextField(
-              controller: titleController,
-              onSubmitted: (_) => _submitForm(),
-              decoration: const InputDecoration(
-                labelText: 'Id',
-              ),
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return 'Informe o titulo';
+                }
+              },
             ),
             //botão que aparece para adicionar
             Row(

@@ -1,4 +1,4 @@
-// ignore_for_file: sized_box_for_whitespace, avoid_print
+// ignore_for_file: sized_box_for_whitespace, avoid_print, prefer_is_empty
 import 'dart:io';
 import 'package:csv/csv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -40,7 +40,7 @@ class TransactionListState extends ConsumerState<TransactionList> {
       context: context,
       builder: (_) {
         return TransactionForm(
-            (p0, p1, p2, p3) async =>
+            (p0, p1, p2, p3, p4) async =>
                 await editTransaction(existingTrans, p0, p1, p2, p3),
             cat.values.toList()); //retorna o form de transação
       },
@@ -50,28 +50,32 @@ class TransactionListState extends ConsumerState<TransactionList> {
   //mostra texto com o total de transações e o valor total das somas delas
   mostraTextoTransacoes() {
     double totalSum = 0;
-    for (double value in caixa.values.map((e) => e.value)) {
+    final list = ref.watch(transactionProvider2);
+    for (double value in list.map((e) => e.value)) {
       totalSum += value;
     }
-    if (caixa.length == 0) {
+    if (list.length == 0) {
+      //texto que aparece quando não possui nenhuma transação cadastrada
       return const Text(
         'Não há transações cadastradas!',
         style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         textAlign: TextAlign.center,
       );
-    } else if (caixa.length == 1) {
+    } else if (list.length == 1) {
+      //texto que aparece quando possui apenas uma transação cadastrada
       return Text(
-          '${caixa.length} transação foi encontrada, com valor de R\$$totalSum',
+          '${list.length} transação foi encontrada, com valor de R\$$totalSum',
           style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           textAlign: TextAlign.center);
-    } else if (caixa.length > 0) {
+    } else if (list.length > 0) {
+      //texto que aparece quando há mais de uma transação cadastrada
       return Text(
-        '${caixa.length} transações foram encontradas, totalizando $totalSum',
+        '${list.length} transações foram encontradas, totalizando $totalSum',
         style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         textAlign: TextAlign.center,
       );
     }
-    ref.invalidate(transactionProvider);
+    ref.invalidate(transactionProvider2);
   }
 
   editTransaction(List<Transaction> teste, String title, double value,
@@ -81,8 +85,7 @@ class TransactionListState extends ConsumerState<TransactionList> {
     teste[0].value = value;
     // teste[0].catiguria = catiguria;
     teste[0].save();
-    ref.invalidate(transactionProvider);
-    setState(() {});
+    ref.invalidate(transactionProvider2);
     Navigator.pop(context);
   }
 

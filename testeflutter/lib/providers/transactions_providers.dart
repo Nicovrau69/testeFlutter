@@ -9,7 +9,7 @@ final transactionProvider =
 });
 
 var transactionProvider2 =
-    StateNotifierProvider<TransactionNotifier, List<Transaction>>((ref) {
+    StateNotifierProvider<TransactionNotifier, List<Transaction>>((refs) {
   return TransactionNotifier();
 });
 
@@ -17,30 +17,30 @@ class TransactionNotifier extends StateNotifier<List<Transaction>> {
   TransactionNotifier() : super([]) {
     init();
   }
-
   DateTimeRange? range;
   String? valueDropDown;
-  String? observacao;
+  String? obs;
 
-  Future<void> init() async {
-    var observacaos = observacao ?? '';
-    var data =
-        range ?? DateTimeRange(start: DateTime.now(), end: DateTime.now());
-    var categoria = valueDropDown ?? '';
+  search(String? sa, DateTimeRange? d, String? categorias) {
+    var data = d ?? DateTimeRange(start: DateTime.now(), end: DateTime.now());
+    var categoria = categorias ?? '';
+    var observacaos = sa ?? '';
 
-    final box = await Hive.openBox<Transaction>('transaction');
-    state = box.values
-        .toList()
-        .cast<Transaction>()
+    state = state
         .where((e) {
-          return (range != null)
+          return (d != null)
               ? e.date.isAfter(data.start) && e.date.isBefore(data.end)
-              : e.date.difference(data.end).inDays <= 10;
+              : e.date.difference(data.start).inDays <= 10;
         })
         .where((e) =>
             e.observacao.toLowerCase().contains(observacaos.toLowerCase()))
         .where(
             (e) => e.catiguria.toLowerCase().contains(categoria.toLowerCase()))
         .toList();
+  }
+
+  Future<void> init() async {
+    final box = await Hive.openBox<Transaction>('transaction');
+    state = box.values.toList().cast<Transaction>();
   }
 }
