@@ -44,11 +44,6 @@ class _FormCategoryState extends State<FormCategory> {
               decoration: const InputDecoration(
                 labelText: 'Titulo',
               ),
-              validator: (value) {
-                if (value!.isEmpty) {
-                  return 'Informe o titulo';
-                }
-              },
             ),
             //botão que aparece para adicionar
             Row(

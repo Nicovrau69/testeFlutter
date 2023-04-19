@@ -18,7 +18,6 @@ class _FilterDialogState extends ConsumerState<FilterDialog> {
   var observacaoController = TextEditingController();
   DateTimeRange? selecionado;
   String? valueDropdown;
-
   final box = Hive.box<Category>('category');
 
   //mostrar o calendario de range time

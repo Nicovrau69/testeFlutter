@@ -56,6 +56,7 @@ class _PrevisaoFormState extends State<PrevisaoForm> {
                       opcao = v;
                     });
                   },
+                  value: opcao,
                 )),
             IconButton(
                 onPressed: () {

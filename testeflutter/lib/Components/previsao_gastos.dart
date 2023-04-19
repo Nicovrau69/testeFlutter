@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
+import 'package:month_picker_dialog/month_picker_dialog.dart';
 import 'package:testeflutter/components/form_previsao.dart';
 import 'package:testeflutter/components/previsao_chart.dart';
 import 'package:testeflutter/components/previsao_list.dart';
@@ -31,6 +32,20 @@ class _PrevisaoGastosState extends ConsumerState<PrevisaoGastos> {
     );
   }
 
+  var selected = DateTime.now();
+
+  void showButton() async {
+    final selecionado = await showMonthPicker(
+      context: context,
+      initialDate: selected,
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2024),
+    );
+    if (selecionado != null) {
+      selected = selecionado;
+    }
+  }
+
   //adiciona previsao
   addPrevisao(double valore, DateTime date, String categorias) async {
     final newPrevisao = Previsao(
@@ -50,8 +65,12 @@ class _PrevisaoGastosState extends ConsumerState<PrevisaoGastos> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            PrevisaoChart(), //mostra o chart de previsoes
-            PrevisaoList(), //mostra lista de previsoes
+            PrevisaoChart(selected), //mostra o chart de previsoes
+            const PrevisaoList(), //mostra lista de previsoes
+            IconButton(
+                onPressed: showButton,
+                icon: const Icon(Icons
+                    .calendar_month)), //mostra o botão para selecionar o mes que deseja ver
           ],
         ),
       ),
@@ -62,7 +81,7 @@ class _PrevisaoGastosState extends ConsumerState<PrevisaoGastos> {
           openPrevisaoFormModal(context);
         },
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
     );
   }
 }

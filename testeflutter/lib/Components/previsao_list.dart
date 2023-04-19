@@ -16,7 +16,7 @@ class _PrevisaoListState extends ConsumerState<PrevisaoList> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 450,
+      height: 200,
       child: Column(
         children: [
           Expanded(

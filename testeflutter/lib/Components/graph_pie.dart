@@ -36,22 +36,39 @@ class _GraphState extends State<Graph> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Gráfico de pizza'), //titulo que aparece na appbar
-      ),
-      body: Center(
-        child: PieChart(
-          dataMap: dataMap,
-          chartRadius: MediaQuery.of(context).size.width / 1.7,
-          legendOptions: const LegendOptions(
-            legendPosition: LegendPosition.bottom,
-          ),
-          chartValuesOptions: const ChartValuesOptions(
-            showChartValuesInPercentage: false,
+    if (box.isEmpty) {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('Gráfico de pizza'), //titulo que aparece na appbar
+        ),
+        body: Container(
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          alignment: Alignment.center,
+          child: const Text(
+            "Nenhuma categoria encontrada",
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
         ),
-      ),
-    );
+      );
+    } else {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('Gráfico de pizza'), //titulo que aparece na appbar
+        ),
+        body: Center(
+          child: PieChart(
+            dataMap: dataMap,
+            chartRadius: MediaQuery.of(context).size.width / 1.7,
+            legendOptions: const LegendOptions(
+              legendPosition: LegendPosition.bottom,
+            ),
+            chartValuesOptions: const ChartValuesOptions(
+              showChartValuesInPercentage: false,
+            ),
+          ),
+        ),
+      );
+    }
   }
 }
