@@ -52,6 +52,7 @@ class _PrevisaoGastosState extends ConsumerState<PrevisaoGastos> {
         valor: valore, data: date, id: box.keys.length, categoria: categorias);
 
     await box.add(newPrevisao);
+    setState(() {});
     ref.invalidate(previsaoProvider);
   }
 
