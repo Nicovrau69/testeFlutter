@@ -4,7 +4,7 @@ import 'package:hive/hive.dart';
 import 'package:testeflutter/models/category.dart';
 import 'package:testeflutter/models/previsao.dart';
 import 'package:testeflutter/models/transaction.dart';
-import 'package:charts_flutter/flutter.dart' as charts;
+//import 'package:charts_flutter/flutter.dart' as charts;
 import '../models/ChartData.dart';
 
 class PrevisaoChart extends StatefulWidget {
@@ -58,18 +58,18 @@ class _PrevisaoChartState extends State<PrevisaoChart> {
     }).toList();
 
     final grafico = [
-      charts.Series<ChartData?, String>(
-        id: 'Chart',
-        data: (values.isEmpty || values[0].isEmpty) ? [] : values[0][0],
-        domainFn: (datum, index) => datum!.categoria,
-        measureFn: (datum, index) => datum?.valor,
-      ),
-      charts.Series<ChartData?, String>(
-        id: 'Chart',
-        data: (values.isEmpty || values[0].isEmpty) ? [] : values[0][1],
-        domainFn: (datum, index) => datum!.categoria,
-        measureFn: (datum, index) => datum?.valor,
-      )
+      // charts.Series<ChartData?, String>(
+      //   id: 'Chart',
+      //   data: (values.isEmpty || values[0].isEmpty) ? [] : values[0][0],
+      //   domainFn: (datum, index) => datum!.categoria,
+      //   measureFn: (datum, index) => datum?.valor,
+      // ),
+      // charts.Series<ChartData?, String>(
+      //   id: 'Chart',
+      //   data: (values.isEmpty || values[0].isEmpty) ? [] : values[0][1],
+      //   domainFn: (datum, index) => datum!.categoria,
+      //   measureFn: (datum, index) => datum?.valor,
+      // )
     ];
     valor = values;
     graph = grafico;
@@ -89,12 +89,13 @@ class _PrevisaoChartState extends State<PrevisaoChart> {
       );
     } else {
       return Container(
-          width: 411.5,
-          height: 400,
-          child: charts.BarChart(
-            graph,
-            animate: false,
-          ));
+        width: 411.5,
+        height: 400,
+        // child: charts.BarChart(
+        //   graph,
+        //   animate: false,
+        // )
+      );
     }
   }
 }

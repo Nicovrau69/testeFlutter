@@ -71,12 +71,12 @@ class _TransactionFormState extends State<TransactionForm> {
                 labelText: 'Observação (Opcional)',
               ),
             ),
-            DateTimeField(
-                onDateSelected: (date) {
-                  datas = date;
-                  setState(() {});
-                },
-                selectedDate: datas),
+            // DateTimeField(
+            //     onDateSelected: (date) {
+            //       datas = date;
+            //       setState(() {});
+            //     },
+            //     selectedDate: datas),
             //sizedbox que contem o dropdown menu de categorias
             SizedBox(
               width: 200,
