@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -7,6 +8,8 @@ import 'package:testeflutter/components/form_transacoes.dart';
 import 'package:testeflutter/models/category.dart';
 import 'package:testeflutter/models/previsao.dart';
 import 'package:testeflutter/providers/transactions_providers.dart';
+import 'package:testeflutter/screens/main/controller/login_cubit.dart';
+import 'package:testeflutter/screens/main/screens/login_screen.dart';
 import 'package:testeflutter/theme/theme_constants.dart';
 import 'package:testeflutter/theme/theme_manager.dart';
 import './models/transaction.dart';
@@ -14,6 +17,12 @@ import 'components/form_filter.dart';
 import 'components/menu.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 import 'components/transactions_list.dart';
+
+class MeuBloc extends Cubit {
+  MeuBloc() : super(0);
+
+  void incrementar() => emit(state + 1);
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,7 +37,8 @@ void main() async {
   Hive.registerAdapter(PrevisaoAdapter());
   var boxe = await Hive.openBox<Previsao>('previsao'); //abre o box de previsoes
 
-  runApp(const ProviderScope(child: Financeiro()));
+  runApp(BlocProvider(
+      create: (context) => LoginCubit(), child: const Financeiro()));
 }
 
 ThemeManager _themeManager = ThemeManager();
@@ -68,7 +78,7 @@ class _FinanceiroState extends State<Financeiro> {
     return MaterialApp(
       debugShowCheckedModeBanner:
           false, //tira a faixa de debug que fica no topo
-      home: const HomePage(),
+      home: const LoginScreen(),
       theme: lighTheme,
       darkTheme: darkTheme,
       themeMode: _themeManager.themeMode,
